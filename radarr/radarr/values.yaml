@@ -57,7 +57,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: radarr.192.168.0.27.nip.io
+    - host: radarr.192.168.1.27.nip.io
       paths:
       - /
   tls: []

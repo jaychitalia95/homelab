@@ -16,7 +16,7 @@ image:
   repository: linuxserver/sonarr
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: develop
 
 imagePullSecrets: []
 nameOverride: ""
@@ -55,7 +55,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: sonarr.192.168.0.27.nip.io
+    - host: sonarr.192.168.1.27.nip.io
       paths: 
       - /
   tls: []

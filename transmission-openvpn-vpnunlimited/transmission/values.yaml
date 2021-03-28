@@ -21,12 +21,16 @@ env:
     value: "ca-tr"
   - name: LOCAL_NETWORK
     value: "192.168.0.0/24"
+  - name: TRANSMISSION_PEER_PORT
+    value: "47444"
   - name: WEBPROXY_ENABLED
     value: "false"
   - name: PUID
     value: "1000"
   - name: PGID
     value: "1000"
+  # - name: ENABLE_UFW
+  #   value: "true"
 
 image:
   repository: haugene/transmission-openvpn
@@ -37,7 +41,7 @@ image:
 dnsConfig:
   nameservers:
     - 8.8.8.8
-    - 8.8.4.4
+    - 1.1.1.1
 
 imagePullSecrets: []
 nameOverride: ""
@@ -75,7 +79,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "media.192.168.0.27.nip.io"
+    - host: "transmission.192.168.1.27.nip.io"
       paths: 
       - /
   tls: []
