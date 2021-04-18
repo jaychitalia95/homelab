@@ -32,7 +32,7 @@ spec:
             path: /mnt/storage/Downloads/TV
           name: tv
         - hostPath:
-            path: /mnt/storage/completed
+            path: /mnt/storage/
           name: downloads
       serviceAccountName: {{ include "sonarr.serviceAccountName" . }}
       securityContext:
@@ -55,7 +55,7 @@ spec:
           - name: tv
             mountPath: /tv
           - name: downloads
-            mountPath: /downloads
+            mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

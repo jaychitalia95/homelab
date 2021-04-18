@@ -30,10 +30,10 @@ spec:
             path: /mnt/storage
           name: storage
         - hostPath:
-            path: /mnt/storage/downloads/movies
+            path: /mnt/storage/Downloads/Movies
           name: movies
         - hostPath:
-            path: /mnt/storage/downloads/tv
+            path: /mnt/storage/Downloads/TV
           name: tv
       serviceAccountName: {{ include "plex.serviceAccountName" . }}
       securityContext:

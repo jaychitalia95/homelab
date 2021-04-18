@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "radarr.fullname" . }}
+  name: {{ include "jellyfin.fullname" . }}
   labels:
-    {{- include "radarr.labels" . | nindent 4 }}
+    {{- include "jellyfin.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "radarr.selectorLabels" . | nindent 6 }}
+      {{- include "jellyfin.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "radarr.selectorLabels" . | nindent 8 }}
+        {{- include "jellyfin.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -26,15 +26,15 @@ spec:
       {{- end }}
       volumes:
         - hostPath:
-            path: /mnt/storage/radarr
-          name: config
+            path: /mnt/storage
+          name: storage
         - hostPath:
             path: /mnt/storage/Downloads/Movies
-          name: tv
+          name: movies
         - hostPath:
-            path: /mnt/storage/
-          name: downloads
-      serviceAccountName: {{ include "radarr.serviceAccountName" . }}
+            path: /mnt/storage/Downloads/TV
+          name: tv
+      serviceAccountName: {{ include "jellyfin.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -43,19 +43,23 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            {{- toYaml .Values.env | nindent 12 }}
           ports:
             - name: http
-              containerPort: 7878
+              containerPort: 8096
               protocol: TCP
+            - name: auto
+              containerPort: 7359
+              protocol: UDP
+            - name: dlna
+              containerPort: 1900
+              protocol: UDP  
           volumeMounts:
-          - name: config
+          - name: storage
             mountPath: /config
-          - name: tv
+          - name: movies
             mountPath: /movies
-          - name: downloads
-            mountPath: /data
+          - name: tv
+            mountPath: /tv          
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

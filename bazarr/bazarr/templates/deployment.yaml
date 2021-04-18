@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "radarr.fullname" . }}
+  name: {{ include "bazarr.fullname" . }}
   labels:
-    {{- include "radarr.labels" . | nindent 4 }}
+    {{- include "bazarr.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "radarr.selectorLabels" . | nindent 6 }}
+      {{- include "bazarr.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "radarr.selectorLabels" . | nindent 8 }}
+        {{- include "bazarr.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -26,15 +26,15 @@ spec:
       {{- end }}
       volumes:
         - hostPath:
-            path: /mnt/storage/radarr
+            path: /mnt/storage/bazarr
           name: config
         - hostPath:
-            path: /mnt/storage/Downloads/Movies
+            path: /mnt/storage/Downloads/TV
           name: tv
         - hostPath:
-            path: /mnt/storage/
-          name: downloads
-      serviceAccountName: {{ include "radarr.serviceAccountName" . }}
+            path: /mnt/storage/Downloads/Movies
+          name: movies
+      serviceAccountName: {{ include "bazarr.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -43,19 +43,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            {{- toYaml .Values.env | nindent 12 }}
           ports:
             - name: http
-              containerPort: 7878
+              containerPort: 6767
               protocol: TCP
           volumeMounts:
           - name: config
             mountPath: /config
           - name: tv
+            mountPath: /tv
+          - name: movies
             mountPath: /movies
-          - name: downloads
-            mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

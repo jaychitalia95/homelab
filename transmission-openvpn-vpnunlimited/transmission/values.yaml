@@ -29,14 +29,18 @@ env:
     value: "1000"
   - name: PGID
     value: "1000"
-  # - name: ENABLE_UFW
-  #   value: "true"
+  - name: TRANSMISSION_RATIO_LIMIT_ENABLED
+    value: "true"
+  - name: TRANSMISSION_RATIO_LIMIT
+    value: "0"
+  - name: TRANSMISSION_WEB_UI
+    value: "flood-for-transmission"
 
 image:
   repository: haugene/transmission-openvpn
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest-armhf
+  tag: latest
 
 dnsConfig:
   nameservers:

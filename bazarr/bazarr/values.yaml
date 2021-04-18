@@ -1,4 +1,4 @@
-# Default values for plex.
+# Default values for bazarr.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -13,10 +13,10 @@ env:
   value: "1000"
 
 image:
-  repository: linuxserver/plex
+  repository: linuxserver/bazarr
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: arm64v8-latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -24,7 +24,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -47,7 +47,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: 32400
+  targetPort: 6767
 
 ingress:
   enabled: true
@@ -55,7 +55,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: plex.192.168.1.27.nip.io
+    - host: "bazarr.192.168.1.27.nip.io"
       paths:
       - /
   tls: []
