@@ -11,13 +11,5 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-    - port: {{ .Values.service.port }}
-      targetPort: 7359
-      protocol: UDP
-      name: http
-    - port: {{ .Values.service.port }}
-      targetPort: 1900
-      protocol: TCP
-      name: UDP
   selector:
     {{- include "jellyfin.selectorLabels" . | nindent 4 }}

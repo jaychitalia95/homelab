@@ -29,11 +29,8 @@ spec:
             path: /mnt/storage
           name: storage
         - hostPath:
-            path: /mnt/storage/Downloads/Movies
-          name: movies
-        - hostPath:
-            path: /mnt/storage/Downloads/TV
-          name: tv
+            path: /mnt/storage/Downloads/clips
+          name: clips
       serviceAccountName: {{ include "jellyfin.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -47,19 +44,11 @@ spec:
             - name: http
               containerPort: 8096
               protocol: TCP
-            - name: auto
-              containerPort: 7359
-              protocol: UDP
-            - name: dlna
-              containerPort: 1900
-              protocol: UDP  
           volumeMounts:
           - name: storage
             mountPath: /config
-          - name: movies
-            mountPath: /movies
-          - name: tv
-            mountPath: /tv          
+          - name: clips
+            mountPath: /clips         
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
