@@ -1,0 +1,14 @@
+{{- if .Values.persistenceVolume.enabled }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: codeserver-storage
+spec:
+    storageClassName: {{ .Values.persistenceVolume.storageClassName }}
+    capacity:
+        storage: {{ .Values.persistenceVolume.storage }}
+    accessModes:
+        - ReadWriteMany
+    hostPath:
+        path: {{ .Values.persistenceVolume.hostPath }}
+{{- end }}

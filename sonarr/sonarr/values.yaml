@@ -57,7 +57,8 @@ ingress:
   hosts:
     - host: sonarr.192.168.1.27.nip.io
       paths: 
-      - /
+        - path: /
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

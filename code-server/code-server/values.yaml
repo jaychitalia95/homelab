@@ -1,55 +1,26 @@
-# Default values for transmission.
+# Default values for code-server.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-env:
-  - name: OPENVPN_PROVIDER
-    value: "VPNUNLIMITED" # VPN provider. List of supported providers: https://haugene.github.io/docker-transmission-openvpn/supported-providers/
-  - name: OPENVPN_USERNAME
-    valueFrom: # Reference to the secret | openvpn.username
-      secretKeyRef:
-        name: "openvpn"
-        key: "username"
-  - name: OPENVPN_PASSWORD
-    valueFrom: # Reference to the secret | openvpn.password
-      secretKeyRef:
-        name: "openvpn"
-        key: "password"
-  - name: OPENVPN_CONFIG
-    value: "ca-tr"
-  - name: LOCAL_NETWORK
-    value: "192.168.0.0/24"
-  - name: TRANSMISSION_PEER_PORT
-    value: "47444"
-  - name: WEBPROXY_ENABLED
-    value: "false"
-  - name: PUID
-    value: "1000"
-  - name: PGID
-    value: "1000"
-  - name: TRANSMISSION_RATIO_LIMIT_ENABLED
-    value: "true"
-  - name: TRANSMISSION_RATIO_LIMIT
-    value: "0"
-  - name: TRANSMISSION_WEB_UI
-    value: "flood-for-transmission"
-
 image:
-  repository: haugene/transmission-openvpn
-  pullPolicy: Always
+  repository: linuxserver/code-server
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
-
-dnsConfig:
-  nameservers:
-    - 8.8.8.8
-    - 1.1.1.1
+  tag: arm64v8-latest
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+env:
+- name: TZ
+  value: America/Chicago
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -65,26 +36,27 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  allowPrivilegeEscalation: true
-  capabilities:
-    add:
-    - NET_ADMIN
-  privileged: true
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000 
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 9091
+  targetPort: 8443
 
 ingress:
   enabled: true
   annotations: 
     kubernetes.io/ingress.class: traefik
-    # kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/rule-type: PathPrefix
   hosts:
-    - host: "transmission.192.168.1.27.nip.io"
-      paths: 
+    - host: code.192.168.1.27.nip.io
+      paths:
         - path: /
           pathType: Prefix
   tls: []
@@ -110,6 +82,12 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+
+persistenceVolume:
+  enabled: true
+  storageClassName: local-path
+  storage: 1Gi
+  hostPath: /mnt/storage/code-server
 
 nodeSelector: {}
 
