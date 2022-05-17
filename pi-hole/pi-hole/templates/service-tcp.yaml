@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pi-hole.fullname" . }}-tcp
+  labels:
+    {{- include "pi-hole.labels" . | nindent 4 }}-tcp
+spec:
+  type: {{ .Values.servicetcp.type }}
+  ports:
+    - port: {{ .Values.servicetcp.port }}
+      targetPort: {{ .Values.servicetcp.targetPort }}
+      protocol: TCP
+      name: dns-tcp
+  selector:
+    {{- include "pi-hole.selectorLabels" . | nindent 4 }}

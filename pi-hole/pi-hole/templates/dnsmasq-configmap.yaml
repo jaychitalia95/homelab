@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "pi-hole.fullname" . }}-custom-dnsmasq
+  labels:
+    app: {{ template "pi-hole.name" . }}
+    chart: {{ template "pi-hole.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  02-custom.conf: |
+    addn-hosts=/etc/addn-hosts
+  {{- range .Values.dnsmasq.upstreamServers }}
+    {{ . }}
+  {{- end }}
+  {{- range .Values.dnsmasq.customDnsEntries }}
+    {{ . }}
+  {{- end }}
+  {{- range .Values.dnsmasq.customSettings }}
+    {{ . }}
+  {{- end }}
+  addn-hosts: |
+  {{- range .Values.dnsmasq.additionalHostsEntries }}
+    {{ . }}
+  {{- end }}
+  05-pihole-custom-cname.conf: |
+  {{- range .Values.dnsmasq.customCnameEntries }}
+    {{ . }}
+  {{- end }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pi-hole.fullname" . }}-udp
+  labels:
+    {{- include "pi-hole.labels" . | nindent 4 }}-udp
+spec:
+  type: {{ .Values.serviceudp.type }}
+  ports:
+    - port: {{ .Values.serviceudp.port }}
+      targetPort: {{ .Values.serviceudp.targetPort }}
+      protocol: UDP
+      name: dns-udp
+  selector:
+    {{- include "pi-hole.selectorLabels" . | nindent 4 }}
